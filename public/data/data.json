@@ -1,0 +1,25 @@
+{
+  "pedidosVenda": [
+    { "id": "#20450", "descricao": "Mesa Retangular 2m x 1m", "quantidade": "20 pç" },
+    { "id": "#21200", "descricao": "Mesa Retangular 3m x 2m", "quantidade": "40 pç" },
+    { "id": "#22152", "descricao": "Mesa Retangular 1m x 50cm", "quantidade": "30 pç" },
+    { "id": "#23485", "descricao": "Mesa Retangular 2m x 1m", "quantidade": "26 pç" },
+    { "id": "#24685", "descricao": "Mesa Retangular 3m x 1m", "quantidade": "15 pç" }
+  ],
+  "pedidosCompra": [
+    { "id": "#12289", "descricao": "Tampo para Mesa Retangular", "quantidade": "120 pç" }
+  ],
+  "produtos": [
+    { "id": "#MR2X1", "descricao": "Mesa Retangular 2m x 1m" },
+    { "id": "#MR3X2", "descricao": "Mesa Retangular 3m x 2m" },
+    { "id": "#MR1X-5", "descricao": "Mesa Retangular 1m x 50cm" },
+    { "id": "#MR4X2", "descricao": "Mesa Retangular 4m x 2m" },
+    { "id": "#MR3X1", "descricao": "Mesa Retangular 3m x 1m" },
+    { "id": "#MR5X2", "descricao": "Mesa Retangular 5m x 2m" }
+  ],
+  "equipamentos": [
+    { "id": "#CMRP1", "descricao": "Cortador Tampo Mesa Retangular Pequeno" },
+    { "id": "#CMRG1", "descricao": "Cortador Tampo Mesa Retangular Grande" }
+  ],
+  "maoObra": []
+}
