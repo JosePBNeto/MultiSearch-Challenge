@@ -1,25 +1,81 @@
-.logo {
-  display: block;
+.container {
+  max-width: 800px;
   margin: 0 auto;
-  width: 150px;
+  padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
-h3 {
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  max-width: 200px;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  width: 300px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+}
+
+.search-bar button {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-left: 0;
+  border-radius: 0 4px 4px 0;
+  background-color: #bd2222;
+  color: #fff;
+}
+
+.results-count {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.results {
   margin-top: 20px;
 }
 
-ul {
-  list-style-type: none;
-  padding-left: 0;
+.category {
+  margin-bottom: 20px;
 }
 
-li {
-  background: #f8f9fa;
-  margin: 5px 0;
+.category h3 {
+  background-color: #f7f7f7;
   padding: 10px;
-  border-radius: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
-.input-group-append {
-  margin-left: 10px;
+.category ul {
+  list-style: none;
+  padding: 0;
+}
+
+.category ul li {
+  background-color: #fff;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.category ul li a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.category ul li a:hover {
+  text-decoration: underline;
 }

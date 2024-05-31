@@ -1,120 +1,108 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 
-function App() {
-  const [data, setData] = useState({});
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState({});
+const App = () => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [results, setResults] = useState({});
+    const [filteredResults, setFilteredResults] = useState({});
+    const [totalResults, setTotalResults] = useState(0);
+    const [notFound, setNotFound] = useState(false);
 
-  useEffect(() => {
-    fetch('/data/data.json')
-      .then(response => response.json())
-      .then(data => {
-        console.log(data); // Verificar se os dados são carregados corretamente
-        setData(data);
-        setSearchResults(data); // Inicializa a tela com todos os dados
-      })
-      .catch(error => console.error('Error loading data:', error));
-  }, []);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/search?query=');
+                const data = response.data;
+                setResults(data);
+                setFilteredResults(data);
+                const total = Object.values(data).reduce((sum, arr) => sum + arr.length, 0);
+                setTotalResults(total);
+                setNotFound(total === 0);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                setNotFound(true);
+            }
+        };
+        fetchData();
+    }, []);
 
-  const handleSearch = () => {
-    const filteredResults = {
-      pedidosVenda: filteredData(data.pedidosVenda, searchTerm),
-      pedidosCompra: filteredData(data.pedidosCompra, searchTerm),
-      produtos: filteredData(data.produtos, searchTerm),
-      equipamentos: filteredData(data.equipamentos, searchTerm),
-      maoObra: filteredData(data.maoObra, searchTerm)
+    const handleSearch = () => {
+        if (searchQuery === '') {
+            setFilteredResults(results);
+            setNotFound(false);
+        } else {
+            const filtered = {};
+            Object.keys(results).forEach(category => {
+                filtered[category] = results[category].filter(item => {
+                    return Object.values(item).some(value =>
+                        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+                    );
+                });
+            });
+            setFilteredResults(filtered);
+            const total = Object.values(filtered).reduce((sum, arr) => sum + arr.length, 0);
+            setTotalResults(total);
+            setNotFound(total === 0);
+        }
     };
-    setSearchResults(filteredResults);
-  };
 
-  const filteredData = (dataArray, term) => {
-    if (!dataArray) return [];
-    return dataArray.filter(item => item.descricao.toLowerCase().includes(term.toLowerCase()));
-  };
-
-  return (
-    <div className="container">
-      <div className="row">
-        <div className="col">
-          <img src="logo.png" alt="MultiSearch Logo" className="logo" />
-          <div className="input-group my-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Mesa Ret"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <div className="input-group-append">
-              <button className="btn btn-primary" onClick={handleSearch}>Buscar</button>
+    return (
+        <div className="container">
+            <div className="header">
+                <img src="/logo.png" alt="MultiSearch Logo" className="logo" />
             </div>
-          </div>
-          <div>
-            <h3>Pedidos de Venda</h3>
-            <ul>
-              {searchResults.pedidosVenda && searchResults.pedidosVenda.length > 0 ? (
-                searchResults.pedidosVenda.map(item => (
-                  <li key={item.id}>{item.descricao} - Qtd: {item.quantidade}</li>
-                ))
-              ) : (
-                <li>Produto não encontrado</li>
-              )}
-            </ul>
-          </div>
-          <div>
-            <h3>Pedidos de Compra</h3>
-            <ul>
-              {searchResults.pedidosCompra && searchResults.pedidosCompra.length > 0 ? (
-                searchResults.pedidosCompra.map(item => (
-                  <li key={item.id}>{item.descricao} - Qtd: {item.quantidade}</li>
-                ))
-              ) : (
-                <li>Produto não encontrado</li>
-              )}
-            </ul>
-          </div>
-          <div>
-            <h3>Produtos</h3>
-            <ul>
-              {searchResults.produtos && searchResults.produtos.length > 0 ? (
-                searchResults.produtos.map(item => (
-                  <li key={item.id}>{item.descricao}</li>
-                ))
-              ) : (
-                <li>Produto não encontrado</li>
-              )}
-            </ul>
-          </div>
-          <div>
-            <h3>Equipamentos</h3>
-            <ul>
-              {searchResults.equipamentos && searchResults.equipamentos.length > 0 ? (
-                searchResults.equipamentos.map(item => (
-                  <li key={item.id}>{item.descricao}</li>
-                ))
-              ) : (
-                <li>Produto não encontrado</li>
-              )}
-            </ul>
-          </div>
-          <div>
-            <h3>Mão de Obra</h3>
-            <ul>
-              {searchResults.maoObra && searchResults.maoObra.length > 0 ? (
-                searchResults.maoObra.map(item => (
-                  <li key={item.id}>{item.descricao}</li>
-                ))
-              ) : (
-                <li>Produto não encontrado</li>
-              )}
-            </ul>
-          </div>
+            <div className="search-bar">
+                <input
+                    type="text"
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={e => setSearchQuery(e.target.value)}
+                />
+                <button onClick={handleSearch}><i className="fa fa-search"></i>GO</button>
+            </div>
+            <div className="results-count">
+                {totalResults > 0 && <p>Foram encontrados {totalResults} resultados:</p>}
+            </div>
+            <div className="results">
+                {notFound && <p>Produto não encontrado</p>}
+                {Object.keys(filteredResults).map(category => (
+                    <div key={category} className="category">
+                        <h3>{getCategoryName(category)} ({filteredResults[category].length} itens encontrados)</h3>
+                        <ul>
+                            {filteredResults[category].map((item, index) => (
+                                <li key={index}>
+                                    <a href={`#${item.EquipmentID || item.PurchaseOrderID || item.SalesOrderID || item.WorkforceID} `} className="item-link">
+                                        #{item.EquipmentID || item.PurchaseOrderID || item.SalesOrderID || item.WorkforceID} {''}
+                                    </a>
+                                    {item.EquipmentName || item.MaterialName || item.Name} 
+                                    {item.Quantity && ` Qtd: ${item.Quantity}`}
+                                    {item.TotalCost && ` Total: ${item.TotalCost}`}
+                                    {item.TotalValue && ` Total: ${item.TotalValue}`}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+            </div>
         </div>
-      </div>
-    </div>
-  );
-}
+    );
+};
+
+const getCategoryName = (category) => {
+    switch (category) {
+        case 'equipments':
+            return 'Equipamentos';
+        case 'purchaseOrders':
+            return 'Pedidos de Compra';
+        case 'salesOrders':
+            return 'Pedidos de Venda';
+        case 'workforce':
+            return 'Mão de obra';
+        default:
+            return category;
+    }
+};
 
 export default App;
