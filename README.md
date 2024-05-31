@@ -31,7 +31,7 @@ O Projeto MultiSearch é uma aplicação web projetada para buscar e exibir dado
    O backend será iniciado em `http://localhost:8080`.
 
    ### Configuração do Frontend
-1. **No diretório src/multisearch/src instale as Dependências**:
+1. **No diretório src/multisearch instale as Dependências**:
     ```bash
     npm install
     ```
